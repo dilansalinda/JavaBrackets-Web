@@ -1,0 +1,41 @@
+<assembly>
+
+    <id>${project.version}</id>
+    <formats>
+
+        <format>zip</format>
+        <format>dir</format>
+    </formats>
+
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <directory>target/lib</directory>
+            <includes>
+                <include>**/**</include>
+            </includes>
+            <outputDirectory>lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/resources/</directory>
+            <outputDirectory>config</outputDirectory>
+            <includes>
+                <include>*.properties</include>
+                <include>logback.xml</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+    <files>
+        <file>
+            <source>${basedir}/src/main/assembly/start.bat</source>
+            <outputDirectory></outputDirectory>
+            <filtered>false</filtered>
+        </file>
+        <file>
+            <source>target/${project.name}-${project.version}.jar</source>
+            <outputDirectory>lib</outputDirectory>
+            <filtered>false</filtered>
+        </file>
+    </files>
+</assembly>
