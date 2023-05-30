@@ -35,12 +35,10 @@ public class RolePermissionDAO {
                 "INNER JOIN user_allocation ua ON ua.user_id = u.id " +
                 "INNER JOIN user_permission urp ON urp.user_id = ua.user_id " +
                 "INNER JOIN permission p ON p.id = urp.permission_id " +
-                "WHERE (u.username = '" + username + "' AND ua.is_active=1 AND ua.project_id = " + projectId +
-                " AND ua.role ='" + role + "')" +
-                " OR (u.username = '" + username + "' AND ua.is_active=1 AND ua.project_id = " + projectId +
-                " AND ua.role = 'admin') ";
+                "WHERE (u.username = ? AND ua.is_active=1 AND ua.project_id = ? AND ua.role =?)" +
+                " OR (u.username = ? AND ua.is_active=1 AND ua.project_id = ? AND ua.role = 'admin') ";
 
-        List<String> permissions = jdbcTemplate.queryForList(sql, String.class);
+        List<String> permissions = jdbcTemplate.queryForList(sql, new Object[]{username, projectId, role, username, projectId}, String.class);
         Map<String, Object> permMap = new HashMap<>();
         permissions.forEach(permission -> permMap.put(permission, true));
 
