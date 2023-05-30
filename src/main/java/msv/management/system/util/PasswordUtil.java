@@ -52,12 +52,10 @@ public class PasswordUtil {
             if (encrypted != null) {
                 IvParameterSpec iv = new IvParameterSpec(initVector.getBytes(StandardCharsets.UTF_8));
                 SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
+                Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");  // Use AES/GCM/NoPadding cipher mode
 
-                Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
                 cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
-
                 byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
-
                 return new String(original, StandardCharsets.UTF_8);
             }
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | BadPaddingException
@@ -66,4 +64,5 @@ public class PasswordUtil {
         }
         return encrypted;
     }
+
 }
