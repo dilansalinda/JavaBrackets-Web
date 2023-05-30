@@ -22,7 +22,7 @@ public class RolePermissionService implements IRolePermissionService {
 
     @Override
     public PermissionDTO getUserPermissions(String username, int projectId, String role) {
-        return rolepermissionDAO.getUserPermissionsPermissions(username, projectId, role);
+        return rolepermissionDAO.getUserPermissions(username, projectId, role);
     }
 
     @Override

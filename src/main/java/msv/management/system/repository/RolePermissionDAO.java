@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -23,27 +24,31 @@ public class RolePermissionDAO {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public PermissionDTO getUserPermissionsPermissions(String username, int projectId, String role) {
-
+    public PermissionDTO getUserPermissions(String username, int projectId, String role) {
         if (Objects.equals(username, "admin")) {
             PermissionDTO permissionDTO = new PermissionDTO();
             permissionDTO.put("form_management", true);
             return permissionDTO;
         }
 
-        String sql = "SELECT p.permission from user u " +
+        String sql = "SELECT p.permission FROM user u " +
                 "INNER JOIN user_allocation ua ON ua.user_id = u.id " +
                 "INNER JOIN user_permission urp ON urp.user_id = ua.user_id " +
                 "INNER JOIN permission p ON p.id = urp.permission_id " +
-                "WHERE (u.username = ? AND ua.is_active=1 AND ua.project_id = ? AND ua.role =?)" +
-                " OR (u.username = ? AND ua.is_active=1 AND ua.project_id = ? AND ua.role = 'admin') ";
+                "WHERE (u.username = ? AND ua.is_active = 1 AND ua.project_id = ? AND ua.role = ?) " +
+                "OR (u.username = ? AND ua.is_active = 1 AND ua.project_id = ? AND ua.role = 'admin')";
 
-        List<String> permissions = jdbcTemplate.queryForList(sql, new Object[]{username, projectId, role, username, projectId}, String.class);
+        List<String> permissions = jdbcTemplate.queryForList(
+                sql,
+                new Object[]{username, projectId, role, username, projectId},
+                new int[]{Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.INTEGER},
+                String.class
+        );
+
         Map<String, Object> permMap = new HashMap<>();
         permissions.forEach(permission -> permMap.put(permission, true));
 
         return objectMapper.convertValue(permMap, PermissionDTO.class);
-
     }
 
     public Response upsertUserPermissions(String username, List<String> permissions) {

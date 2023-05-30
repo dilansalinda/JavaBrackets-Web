@@ -82,16 +82,16 @@ public class AuthDAO {
 
     public void delete(String username) {
         deleteRoles(username);
-        String sql = "UPDATE user SET active =0 WHERE username = '" + username + "'";
-        jdbcSecurity.update(sql);
+        String sql = "UPDATE user SET active =0 WHERE username = ?";
+        jdbcSecurity.update(sql, username);
     }
 
     public boolean isAdmin(AuthRequestDTO authRequestDTO) {
         String sql = "SELECT r.role FROM user u \n" +
                 "INNER JOIN user_roles ur ON ur.username = u.username\n" +
                 "INNER JOIN role r ON ur.role_id = r.id\n" +
-                "WHERE u.username = '" + authRequestDTO.getUsername() + "' AND ur.status='active';";
-        List<String> roles = jdbcSecurity.queryForList(sql, String.class);
+                "WHERE u.username = ? AND ur.status='active';";
+        List<String> roles = jdbcSecurity.queryForList(sql, new Object[]{authRequestDTO.getUsername()}, String.class);
         return roles.contains("admin");
     }
 
