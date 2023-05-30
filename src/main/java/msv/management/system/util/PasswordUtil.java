@@ -31,7 +31,6 @@ public class PasswordUtil {
 
                 SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
                 Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                Cipher.getInstance("AES");
                 cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
                 byte[] encrypted = cipher.doFinal(value.getBytes(StandardCharsets.UTF_8));
                 return Base64.encodeBase64String(iv.getIV()) + ":" + Base64.encodeBase64String(encrypted);
