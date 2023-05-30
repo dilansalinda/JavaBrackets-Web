@@ -34,4 +34,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: 7b11a68d4484d604b488aea74d59e7fa701142ac
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=JavaBrackets-Web -Dsonar.sources=. -Dsonar.java.binaries=. -Dsonar.projectBaseDir=/msv -Dsonar.verbose=true -Dsonar.log.level=DEBUG
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=dilansalinda_JavaBrackets-Web -Dsonar.sources=. -Dsonar.java.binaries=. -Dsonar.projectBaseDir=/msv -Dsonar.verbose=true -Dsonar.log.level=DEBUG
