@@ -30,7 +30,7 @@ public class PasswordUtil {
                 IvParameterSpec iv = new IvParameterSpec(ivBytes);
 
                 SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
-                Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
                 Cipher.getInstance("AES");
                 cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
                 byte[] encrypted = cipher.doFinal(value.getBytes(StandardCharsets.UTF_8));
