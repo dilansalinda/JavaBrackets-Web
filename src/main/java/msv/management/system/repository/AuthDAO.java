@@ -27,7 +27,7 @@ public class AuthDAO {
         String sql = "INSERT INTO user (`username`, `first_name`, `last_name`, `email`,`active`) VALUES (?,?," +
                 "?,?,?) ON DUPLICATE KEY UPDATE first_name=values(first_name), last_name=values(last_name), email=values(email)," +
                 "  active=values(active);";
-        int st = jdbcSecurity.update(
+        jdbcSecurity.update(
                 connection -> {
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setString(1, user.getUserName());
@@ -68,17 +68,16 @@ public class AuthDAO {
 
 
     public Optional<AuthUserDTO> getUserByUserName(String username) {
-        String sql = "Select * From user Where username='" + username + "' AND active=1";
-        List<AuthUserDTO> result = jdbcSecurity.query(sql, new BeanPropertyRowMapper<>(AuthUserDTO.class));
+        String sql = "SELECT * FROM user WHERE username = ? AND active = 1";
+        List<AuthUserDTO> result = jdbcSecurity.query(sql, new Object[]{username}, new BeanPropertyRowMapper<>(AuthUserDTO.class));
         if (result != null && !result.isEmpty())
             return Optional.of(result.get(0));
         return Optional.empty();
     }
 
     public List<AuthUserDTO> getAllUsers() {
-        String sql = "Select * From user Where active=1";
-        List<AuthUserDTO> result = jdbcSecurity.query(sql, new BeanPropertyRowMapper<>(AuthUserDTO.class));
-        return result;
+        String sql = "Select * From user Where active=true";
+        return jdbcSecurity.query(sql, new BeanPropertyRowMapper<>(AuthUserDTO.class));
     }
 
     public void delete(String username) {
