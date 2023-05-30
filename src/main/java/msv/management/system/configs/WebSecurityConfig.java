@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -18,10 +19,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         if (ConfigurationConstants.getAuthEnabled()) {
-            http.authorizeRequests().anyRequest().permitAll();
-            http.cors().and().csrf().disable();
+            http
+                    .authorizeRequests()
+                    .anyRequest().permitAll()
+                    .and()
+                    .cors()
+                    .and()
+                    .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         } else {
-            http.anonymous();
+            http
+                    .authorizeRequests()
+                    .anyRequest().permitAll()
+                    .and()
+                    .csrf();
         }
     }
 

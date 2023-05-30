@@ -97,20 +97,20 @@ public class AppConfigDAO {
 
     public List<AppConfigDTO> getConfig(String component) {
         String sql = "SELECT * FROM `property_info` WHERE component = '" + component + "'";
-        List<AppConfigDTO> configs = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AppConfigDTO.class));
+        List<AppConfigDTO> configs = jdbcTemplate.query(sql, new Object[]{component}, new BeanPropertyRowMapper<>(AppConfigDTO.class));
         return configs;
     }
 
     public List<AppConfigDTO> getConfig(String component, String instance) {
-        String sql = "SELECT * FROM `property_info` WHERE component = '" + component + "' AND instance='" + instance + "'";
-        List<AppConfigDTO> configs = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AppConfigDTO.class));
+        String sql = "SELECT * FROM `property_info` WHERE component = ? AND instance = ?";
+        List<AppConfigDTO> configs = jdbcTemplate.query(sql, new Object[]{component, instance}, new BeanPropertyRowMapper<>(AppConfigDTO.class));
         return configs;
     }
 
 
     public AppConfigDTO getConfig(String component, String instance, String config_key) {
-        String sql = "SELECT * FROM `property_info` WHERE component = '" + component + "' AND instance='" + instance + "' AND config_key='" + config_key + "'";
-        List<AppConfigDTO> configs = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AppConfigDTO.class));
+        String sql = "SELECT * FROM `property_info` WHERE component = ? AND instance= ? AND config_key= ?";
+        List<AppConfigDTO> configs = jdbcTemplate.query(sql, new Object[]{component, instance, config_key}, new BeanPropertyRowMapper<>(AppConfigDTO.class));
         AppConfigDTO config = new AppConfigDTO();
         config.setComponent(component);
         config.setInstance(instance);

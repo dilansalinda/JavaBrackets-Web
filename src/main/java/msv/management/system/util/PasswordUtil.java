@@ -10,11 +10,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 public class PasswordUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(PasswordUtil.class);
@@ -22,53 +22,43 @@ public class PasswordUtil {
     private static String initVector = "RandomInitVector"; // 16 bytes initVector
 
     public static String encrypt(String value) {
-
         try {
-
             if (value != null) {
-                IvParameterSpec iv = new IvParameterSpec(initVector.getBytes(Charset.defaultCharset()));
-                SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(Charset.defaultCharset()), "AES");
+                SecureRandom secureRandom = new SecureRandom();
+                byte[] ivBytes = new byte[16];
+                secureRandom.nextBytes(ivBytes);
+                IvParameterSpec iv = new IvParameterSpec(ivBytes);
 
-                Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+                SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
+                Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
                 cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
-
-                byte[] encrypted = cipher.doFinal(value.getBytes(Charset.defaultCharset()));
-
-                return Base64.encodeBase64String(encrypted);
+                byte[] encrypted = cipher.doFinal(value.getBytes(StandardCharsets.UTF_8));
+                return Base64.encodeBase64String(iv.getIV()) + ":" + Base64.encodeBase64String(encrypted);
             }
-        } catch (NoSuchPaddingException |
-                 NoSuchAlgorithmException |
-                 BadPaddingException |
-                 InvalidAlgorithmParameterException |
-                 InvalidKeyException |
-                 IllegalBlockSizeException ex) {
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | BadPaddingException
+                 | InvalidAlgorithmParameterException | InvalidKeyException | IllegalBlockSizeException ex) {
             LOGGER.error("Error while encrypting password! ", ex);
         }
         return value;
     }
 
+
     public static String decrypt(String encrypted) {
         try {
             if (encrypted != null) {
-                IvParameterSpec iv = new IvParameterSpec(initVector.getBytes(Charset.defaultCharset()));
-                SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(Charset.defaultCharset()), "AES");
+                IvParameterSpec iv = new IvParameterSpec(initVector.getBytes(StandardCharsets.UTF_8));
+                SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
+                Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");  // Use AES/GCM/NoPadding cipher mode
 
-                Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
                 cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
-
                 byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
-
                 return new String(original, StandardCharsets.UTF_8);
             }
-        } catch (
-                NoSuchPaddingException |
-                NoSuchAlgorithmException |
-                BadPaddingException |
-                InvalidAlgorithmParameterException |
-                InvalidKeyException |
-                IllegalBlockSizeException ex) {
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | BadPaddingException
+                 | InvalidAlgorithmParameterException | InvalidKeyException | IllegalBlockSizeException ex) {
             LOGGER.error("Error while decrypting password! ", ex);
         }
         return encrypted;
     }
+
 }
