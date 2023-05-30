@@ -60,10 +60,10 @@ public class AuthDAO {
     }
 
     public void updateUnlockedStatus(String username) {
-        String updateUserLock = "UPDATE user SET unlocked=1 WHERE username = '" + username + "'";
-        String deleteAttempts = "Delete From user_attempts WHERE username = '" + username + "'";
-        jdbcSecurity.update(updateUserLock);
-        jdbcSecurity.update(deleteAttempts);
+        String updateUserLock = "UPDATE user SET unlocked=1 WHERE username = ?";
+        String deleteAttempts = "Delete From user_attempts WHERE username = ?";
+        jdbcSecurity.update(updateUserLock, username);
+        jdbcSecurity.update(deleteAttempts, username);
     }
 
 
