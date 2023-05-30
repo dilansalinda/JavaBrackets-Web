@@ -43,7 +43,7 @@ public class JsonUtil {
         TypeReference sTypeReference = new TypeReference<HashMap<String, Object>>() {
         };
         try {
-            return objectMapper().readValue(data, sTypeReference);
+            return (Map<String, Object>) objectMapper().readValue(data, sTypeReference);
         } catch (IOException e) {
             String msg = "Invalid JSON";
             LOGGER.error(msg, e);
