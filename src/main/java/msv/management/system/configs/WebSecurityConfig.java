@@ -31,9 +31,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     .anyRequest().permitAll()
                     .and()
-                    .csrf().disable();
+                    .csrf();
         }
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
