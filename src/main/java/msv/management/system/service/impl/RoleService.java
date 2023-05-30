@@ -1,8 +1,8 @@
 package msv.management.system.service.impl;
 
 import msv.management.system.dto.RoleDTO;
+import msv.management.system.repository.RoleDAO;
 import msv.management.system.service.IRoleService;
-import org.dilan.repository.RoleDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
